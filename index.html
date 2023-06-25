@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Country, State, City Dropdowns</title>
+  <style>
+    select {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Country, State, City Dropdowns</h2>
+
+  <label for="country">Country:</label>
+  <select id="country" onchange="populateStates()" onclick="listCountries()">
+    <option value="">Select a country</option>
+  </select>
+
+  <label for="state">State:</label>
+  <select id="state" onchange="populateCities()">
+    <option value="">Select a state</option>
+  </select>
+
+  <label for="city">City:</label>
+  <select id="city">
+    <option value="">Select a city</option>
+  </select>
+
+  <script>
+    
+    fetch('https://d32sbion19muhj.cloudfront.net/pub/interview/countries', { mode: 'no-cors' })
+      .then(response => response.json())
+      .then(data => {
+        var countrySelect = document.getElementById('country');
+
+        data.forEach(country => {
+          var option = document.createElement('option');
+          option.value = country.code;
+          option.text = country.name;
+          countrySelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.log('Error fetching countries:', error);
+      });
+
+    function populateStates() {
+      var countrySelect = document.getElementById('country');
+      var stateSelect = document.getElementById('state');
+      var citySelect = document.getElementById('city');
+
+      stateSelect.innerHTML = '<option value="">Select a state</option>';
+      citySelect.innerHTML = '<option value="">Select a city</option>';
+
+      var country = countrySelect.value;
+      if (country !== '') {
+        fetch(`https://d32sbion19muhj.cloudfront.net/pub/interview/states`)
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(state => {
+              var option = document.createElement('option');
+              option.value = state.code;
+              option.text = state.name;
+              stateSelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.log('Error fetching states:', error);
+          });
+      }
+    }
+
+    function populateCities() {
+      var stateSelect = document.getElementById('state');
+      var citySelect = document.getElementById('city');
+
+      citySelect.innerHTML = '<option value="">Select a city</option>';
+
+      var country = document.getElementById('country').value;
+      var state = stateSelect.value;
+      if (country !== '' && state !== '') {
+        
+        fetch(`https://d32sbion19muhj.cloudfront.net/pub/interview/cities`)
+          .then(response => response.json())
+          .then(data => {
+          
+            data.forEach(city => {
+              var option = document.createElement('option');
+              option.value = city.code;
+              option.text = city.name;
+              citySelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.log('Error fetching cities:', error);
+          });
+      }
+    }
+
+  
+    function listCountries() {
+      var countrySelect = document.getElementById('country');
+
+      
+      countrySelect.innerHTML = '<option value="">Select a country</option>';
+
+  
+      fetch('https://d32sbion19muhj.cloudfront.net/pub/interview/countries', { mode: 'no-cors' })
+        .then(response => response.json())
+        .then(data => {
+      
+          data.forEach(country => {
+            var option = document.createElement('option');
+            option.value = country.code;
+            option.text = country.name;
+            countrySelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.log('Error fetching countries:', error);
+        });
+    }
+  </script>
+</body>
+</html>
+
